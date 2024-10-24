@@ -1,0 +1,61 @@
+name: Azure Terraform Deployment (Non-Prod)
+
+# Trigger on push to the main branch, or manually via the workflow_dispatch event.
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  terraform-deploy:
+    name: 'Terraform'
+    env:
+      ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+      ARM_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+      ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+      TF_VERSION: 1.8.4
+    runs-on: ubuntu-latest
+
+    steps:
+    # Step 1: Checkout the repository
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    # Step 2: Set up Terraform
+    - name: Set up Terraform
+      uses: hashicorp/setup-terraform@v2
+      with:
+        terraform_version: 1.8.4 # Replace with the version you are using
+
+    # Step 4: Install Azure CLI
+    - name: Install Azure CLI
+      run: |
+        curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
+
+    # # Step 5: Authenticate to Azure using the provided SPN details
+    # - name: Azure Login
+    #   uses: azure/login@v2
+    #   with:
+    #     client-id: ${{ secrets.AZURE_CLIENT_ID }} # Store SPN details in GitHub Secrets
+    #     tenant-id:  ${{ secrets.AZURE_TENANT_ID }}
+    #     client-secret: ${{ secrets.AZURE_CLIENT_SECRET }}
+    #     subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+
+    # Step 7: Initialize Terraform in the 2-tier folder using the new backend
+    - name: Terraform Init (2-Tier)
+      working-directory: terraform/infra/2-tier
+      run: terraform init
+
+    # Step 8: Terraform Plan in 2-tier
+    - name: Terraform Plan (2-Tier)
+      working-directory: terraform/infra/2-tier
+      run: terraform plan
+
+    # Step 9: Terraform Apply in 2-tier (only if Plan is successful)
+    - name: Terraform Apply (2-Tier)
+      if: success()
+      working-directory: terraform/infra/2-tier
+      run: terraform apply -auto-approve
