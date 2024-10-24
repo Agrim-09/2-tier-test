@@ -29,6 +29,10 @@ jobs:
       with:
         terraform_version: 1.8.4 # Replace with the version you are using
 
+    - name: Clone repository
+      run: |
+        git clone https://github.com/Agrim-09/cloud-catalog.git templates/
+
     # Step 4: Install Azure CLI
     - name: Install Azure CLI
       run: |
