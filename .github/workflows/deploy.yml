@@ -34,15 +34,6 @@ jobs:
       run: |
         curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
 
-    # # Step 5: Authenticate to Azure using the provided SPN details
-    # - name: Azure Login
-    #   uses: azure/login@v2
-    #   with:
-    #     client-id: ${{ secrets.AZURE_CLIENT_ID }} # Store SPN details in GitHub Secrets
-    #     tenant-id:  ${{ secrets.AZURE_TENANT_ID }}
-    #     client-secret: ${{ secrets.AZURE_CLIENT_SECRET }}
-    #     subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-
 
     # Step 7: Initialize Terraform in the 2-tier folder using the new backend
     - name: Terraform Init (2-Tier)
