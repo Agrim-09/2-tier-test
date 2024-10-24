@@ -4,7 +4,7 @@ provider "azurerm" {
 }
 
 resource "azurerm_resource_group" "example" {
-  name     = "testrg01"
+  name     = "testrg02"
   location = "West Europe"
 }
 
