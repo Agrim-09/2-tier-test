@@ -29,9 +29,13 @@ jobs:
       with:
         terraform_version: 1.8.4 # Replace with the version you are using
 
-    - name: Clone repository
+    # Step 3: Clone the cloud catalog modules repository
+    - name: Clone cloud catalog repository
+      env:
+       GITHUB_PAT: ${{ secrets.PAT_GITHUB }} # Store your PAT in GitHub secrets
       run: |
-        git clone https://github.com/Agrim-09/cloud-catalog.git templates/
+        git clone https://${{ secrets.PAT_GITHUB }}@github.com/Agrim-09/cloud-catalog.git templates/
+
 
     # Step 4: Install Azure CLI
     - name: Install Azure CLI
